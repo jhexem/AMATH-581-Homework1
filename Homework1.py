@@ -70,7 +70,7 @@ A4 = np.transpose(np.array([solheun[0]]))
 A5 = np.array([solheun[1]])
 
 coefficientsheun = np.polyfit(np.log(dt), np.log(solheun[1]), 1)
-A6 = coefficientsheun[1]
+A6 = coefficientsheun[0]
 
 
 '''plt.loglog(dt, solheun[1], '.r')
@@ -108,11 +108,11 @@ A7 = np.transpose(np.array([soladams[0]]))
 A8 = np.array([soladams[1]])
 
 coefficientsadams = np.polyfit(np.log(dt), np.log(soladams[1]), 1)
-A9 = coefficientsadams[1]
+A9 = coefficientsadams[0]
 
-'''yfe = solfe[2]
-yheun = solheun[2]
-yadams = soladams[2]
+'''yfe = solfe[0]
+yheun = solheun[0]
+yadams = soladams[0]
 xaxis = np.linspace(0, 5, len(yheun))
 plt.plot(xaxis, yfe, '-g')
 plt.plot(xaxis, yheun, '-r')
@@ -154,3 +154,43 @@ ep3col = np.transpose(np.array([ep3.y[0]]))
 
 A10 = np.transpose(np.array([ep1col, ep2col, ep3col]))[0]
 
+tolerances = np.array([10 ** (-4), 10 ** (-5), 10 ** (-6), 10 ** (-7), 10 ** (-8), 10 ** (-9), 10 ** (-10)])
+z0 = np.array([2, np.pi ** 2])
+
+for i in range(len(tolerances)):
+   solRK45 = solve_ivp(dzdte2, [0, 32], z0, method='RK45', atol=tolerances[i], rtol=tolerances[i])
+   solRK23 = solve_ivp(dzdte2, [0, 32], z0, method='RK23', atol=tolerances[i], rtol=tolerances[i])
+   solBDF = solve_ivp(dzdte2, [0, 32], z0, method='BDF', atol=tolerances[i], rtol=tolerances[i])
+
+   TRK45 = solRK45.t
+   YRK45 = solRK45.y
+   dtlistRK45 = np.diff(TRK45)
+   dtavgRK45 = np.mean(dtlistRK45)
+
+   TRK23 = solRK23.t
+   YRK23 = solRK23.y
+   dtlistRK23 = np.diff(TRK23)
+   dtavgRK23 = np.mean(dtlistRK23)
+
+   TBDF = solBDF.t
+   YRKBDF = solBDF.y
+   dtlistBDF = np.diff(TBDF)
+   dtavgBDF = np.mean(dtlistBDF)
+
+   if i == 0:
+      avglistRK45 = np.array([dtavgRK45])
+      avglistRK23 = np.array([dtavgRK23])
+      avglistBDF = np.array([dtavgBDF])
+   else:
+      avglistRK45 = np.append(avglistRK45, dtavgRK45)
+      avglistRK23 = np.append(avglistRK23, dtavgRK23)
+      avglistBDF = np.append(avglistBDF, dtavgBDF)
+
+coefficientRK45 = np.polyfit(np.log(avglistRK45), np.log(tolerances), 1)
+A11 = coefficientRK45[0]
+
+coefficientRK23 = np.polyfit(np.log(avglistRK23), np.log(tolerances), 1)
+A12 = coefficientRK23[0]
+
+coefficientBDF = np.polyfit(np.log(avglistBDF), np.log(tolerances), 1)
+A13 = coefficientBDF[0]
