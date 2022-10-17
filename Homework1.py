@@ -194,3 +194,52 @@ A12 = coefficientRK23[0]
 
 coefficientBDF = np.polyfit(np.log(avglistBDF), np.log(tolerances), 1)
 A13 = coefficientBDF[0]
+
+y0 = np.array([0.1, 0, 0.1, 0])
+
+def sys_rhs1(t, y):
+   v1, w1, v2, w2 = y
+   dydt = [- v1 ** 3 + (1 + 0.05) * (v1 ** 2) - 0.05 * v1 - w1 + 0.1 + 0 * v2, 0.1 * v1 - 0.1 * w1, 
+   - v2 ** 3 + (1 + 0.25) * (v2 ** 2) - 0.25 * v2 - w2 + 0.1 + 0 * v1, 0.1 * v2 - 0.1 * w2]
+   return  dydt
+
+def sys_rhs2(t, y):
+   v1, w1, v2, w2 = y
+   dydt = [- v1 ** 3 + (1 + 0.05) * (v1 ** 2) - 0.05 * v1 - w1 + 0.1 + 0 * v2, 0.1 * v1 - 0.1 * w1, 
+   - v2 ** 3 + (1 + 0.25) * (v2 ** 2) - 0.25 * v2 - w2 + 0.1 + 0.2 * v1, 0.1 * v2 - 0.1 * w2]
+   return  dydt
+
+def sys_rhs3(t, y):
+   v1, w1, v2, w2 = y
+   dydt = [- v1 ** 3 + (1 + 0.05) * (v1 ** 2) - 0.05 * v1 - w1 + 0.1 - 0.1 * v2, 0.1 * v1 - 0.1 * w1, 
+   - v2 ** 3 + (1 + 0.25) * (v2 ** 2) - 0.25 * v2 - w2 + 0.1 + 0.2 * v1, 0.1 * v2 - 0.1 * w2]
+   return  dydt
+
+def sys_rhs4(t, y):
+   v1, w1, v2, w2 = y
+   dydt = [- v1 ** 3 + (1 + 0.05) * (v1 ** 2) - 0.05 * v1 - w1 + 0.1 - 0.3 * v2, 0.1 * v1 - 0.1 * w1, 
+   - v2 ** 3 + (1 + 0.25) * (v2 ** 2) - 0.25 * v2 - w2 + 0.1 + 0.2 * v1, 0.1 * v2 - 0.1 * w2]
+   return  dydt
+
+def sys_rhs5(t, y):
+   v1, w1, v2, w2 = y
+   dydt = [- v1 ** 3 + (1 + 0.05) * (v1 ** 2) - 0.05 * v1 - w1 + 0.1 - 0.5 * v2, 0.1 * v1 - 0.1 * w1, 
+   - v2 ** 3 + (1 + 0.25) * (v2 ** 2) - 0.25 * v2 - w2 + 0.1 + 0.2 * v1, 0.1 * v2 - 0.1 * w2]
+   return  dydt
+
+tlist = np.arange(0, 100 + 0.5, 0.5)
+
+solFH1 = solve_ivp(sys_rhs1, [0, 100], y0, method='BDF', t_eval=tlist)
+A14 = np.transpose(np.array(solFH1.y))
+
+solFH2 = solve_ivp(sys_rhs2, [0, 100], y0, method='BDF', t_eval=tlist)
+A15 = np.transpose(np.array(solFH2.y))
+
+solFH3 = solve_ivp(sys_rhs3, [0, 100], y0, method='BDF', t_eval=tlist)
+A16 = np.transpose(np.array(solFH3.y))
+
+solFH4 = solve_ivp(sys_rhs4, [0, 100], y0, method='BDF', t_eval=tlist)
+A17 = np.transpose(np.array(solFH4.y))
+
+solFH5 = solve_ivp(sys_rhs5, [0, 100], y0, method='BDF', t_eval=tlist)
+A18 = np.transpose(np.array(solFH5.y))
