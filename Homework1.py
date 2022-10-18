@@ -19,12 +19,12 @@ def forward_euler(t0, y0, dt, dydt, ans):    #returns a tuple of the y value for
    for j in range(len(dt)):      #iterates through each dt value
       dtvals = np.arange(0, 5 + dt[j], dt[j])      #creates an array of t values each spaced apart from the previous value by dt
 
-      for i in range(len(dtvals)):     #iterates thru the list of dt values and calculates the next y value using FE
+      for i in range(len(dtvals)):     #iterates through the list of dt values and calculates the next y value using FE
          if i == 0:
-            y = y0 + dt[j] * dydt(t0, y0)
+            y = y0
             yvals = np.array(y0)
          else:
-            y = y + dt[j] * dydt(dtvals[i], y)
+            y = y + dt[j] * dydt(dtvals[i-1], y)
             yvals = np.append(yvals, y)
 
       errorlist[j] = np.abs(ans - y)      #adds the error for this value of dt to the error list
@@ -54,10 +54,10 @@ def heun(t0, y0, dt, dydt, ans):
 
       for i in range(len(dtvals)):
          if i == 0:
-            y = y0 + (dt[j] / 2) * (dydt(t0, y0) + dydt(t0 + dt[j], y0 + dt[j] * dydt(t0, y0)))
+            y = y0
             yvals = np.array(y0)
          else:
-            y = y + (dt[j] / 2) * (dydt(dtvals[i], y) + dydt(dtvals[i] + dt[j], y + dt[j] * dydt(dtvals[i], y)))
+            y = y + (dt[j] / 2) * (dydt(dtvals[i-1], y) + dydt(dtvals[i-1] + dt[j], y + dt[j] * dydt(dtvals[i-1], y)))
             yvals = np.append(yvals, y)
 
       errorlist[j] = np.abs(ans - y)
@@ -88,16 +88,19 @@ def adams(t0, y0, dt, dydt, ans):
 
       for i in range(len(dtvals)):
          if i == 0:
+            y = y0
+            yvals = np.array([y0])
+         elif i == 1:
             yprev = y0
             y = RK2(t0, y0, dt[j], dydt)
-            yvals = np.array([y0])
+            yvals = np.append(yvals, y)
          else:
-            ypred = y + (dt[j]/2) * (3 * dydt(dtvals[i], y) - dydt(dtvals[i-1], yprev))
+            ypred = y + (dt[j]/2) * (3 * dydt(dtvals[i-1], y) - dydt(dtvals[i-2], yprev))
             yprev = y
-            y = y + (dt[j]/2) * (dydt(dtvals[i] + dt[j], ypred) + dydt(dtvals[i], y))
+            y = y + (dt[j]/2) * (dydt(dtvals[i-1] + dt[j], ypred) + dydt(dtvals[i-1], y))
             yvals = np.append(yvals, y)
 
-      errorlist[j] = np.abs(y - ans)
+      errorlist[j] = np.abs(ans - y)
 
    return yvals, errorlist
 
@@ -108,7 +111,7 @@ A8 = np.array([soladams[1]])
 coefficientsadams = np.polyfit(np.log(dt), np.log(soladams[1]), 1)
 A9 = coefficientsadams[0]
 
-'''yfe = solfe[0]
+yfe = solfe[0]
 yheun = solheun[0]
 yadams = soladams[0]
 xaxis = np.linspace(0, 5, len(yheun))
@@ -116,7 +119,7 @@ plt.plot(xaxis, yfe, '-g')
 plt.plot(xaxis, yheun, '-r')
 plt.plot(xaxis, yadams, '-y')
 plt.plot(xaxis, ytrue(xaxis), '-b')
-plt.show()'''
+plt.show()
 
 t0 = 0
 y0 = np.sqrt(3)
@@ -241,3 +244,7 @@ A17 = np.transpose(np.array(solFH4.y))
 
 solFH5 = solve_ivp(sys_rhs5, [0, 100], y0, method='BDF', t_eval=tlist2)
 A18 = np.transpose(np.array(solFH5.y))
+
+print(A3)
+print(A6)
+print(A9)
