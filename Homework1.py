@@ -196,7 +196,7 @@ A12 = coefficientRK23[0]
 coefficientBDF = np.polyfit(np.log(avglistBDF), np.log(tolerances), 1)
 A13 = coefficientBDF[0]
 
-y0 = np.array([0.1, 0, 0.1, 0])
+y0 = np.array([0.1, 0.1, 0, 0])
 
 def sys_rhs1(t, y):
    v1, v2, w1, w2 = y
@@ -244,7 +244,3 @@ A17 = np.transpose(np.array(solFH4.y))
 
 solFH5 = solve_ivp(sys_rhs5, [0, 100], y0, method='BDF', t_eval=tlist2)
 A18 = np.transpose(np.array(solFH5.y))
-
-print(A3)
-print(A6)
-print(A9)
