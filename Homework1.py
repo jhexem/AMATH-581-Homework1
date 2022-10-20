@@ -2,24 +2,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import solve_ivp
 
-def dydt(t, y):      #defines dydt
+def dydt(t, y):
    return (-3) * y * np.sin(t)
 
-def ytrue(t):     #defines ytrue
+def ytrue(t):
    return (np.pi * np.exp(3 * (np.cos(t) - 1)) / np.sqrt(2))
 
-t0 = 0      #initializes t0, y0, the array of all dt values, and the ytrue value at t=5
+t0 = 0
 y0 = np.pi / np.sqrt(2)
 dt = np.array([2**(-2), 2**(-3), 2**(-4), 2**(-5), 2**(-6), 2**(-7), 2**(-8)])
 ans = ytrue(5)
 
-def forward_euler(t0, y0, dt, dydt, ans):    #returns a tuple of the y value for 2^(-8) and the array of errors
-   errorlist = np.empty(len(dt))    #initialize the array of 7 error values corresponding to the 7 dt values
+def forward_euler(t0, y0, dt, dydt, ans):
+   errorlist = np.empty(len(dt))
 
-   for j in range(len(dt)):      #iterates through each dt value
-      dtvals = np.arange(0, 5 + dt[j], dt[j])      #creates an array of t values each spaced apart from the previous value by dt
+   for j in range(len(dt)):
+      dtvals = np.arange(0, 5 + dt[j], dt[j])
 
-      for i in range(len(dtvals)):     #iterates through the list of dt values and calculates the next y value using FE
+      for i in range(len(dtvals)):
          if i == 0:
             y = y0
             yvals = np.array(y0)
@@ -27,7 +27,7 @@ def forward_euler(t0, y0, dt, dydt, ans):    #returns a tuple of the y value for
             y = y + dt[j] * dydt(dtvals[i-1], y)
             yvals = np.append(yvals, y)
 
-      errorlist[j] = np.abs(ans - y)      #adds the error for this value of dt to the error list
+      errorlist[j] = np.abs(ans - y)
       
    return yvals, errorlist
 
@@ -40,7 +40,6 @@ A3 = coefficientsfe[0]
 
 xaxis = np.linspace(0.0001, 1, 1000)
 '''plt.loglog(dt, solfe[1], '.r')
-coefficientsfe = np.polyfit(np.log(dt), np.log(solfe[1]), 1)
 polynomialfe = np.poly1d(coefficientsfe)
 ylinefe = polynomialfe(np.log(xaxis))
 plt.plot(xaxis, np.exp(ylinefe), '-b')
@@ -111,7 +110,20 @@ A8 = np.array([soladams[1]])
 coefficientsadams = np.polyfit(np.log(dt), np.log(soladams[1]), 1)
 A9 = coefficientsadams[0]
 
-yfe = solfe[0]
+plt.loglog(dt, solfe[1], '.r', label='Eulers Method Data')
+plt.loglog(dt, solheun[1], '.b', label='Heuns Method Data')
+plt.loglog(dt, soladams[1], '.g', label='Adams Method Data')
+xaxis = np.linspace(-6, -1, 1000)
+plt.loglog(np.exp(xaxis), np.exp(xaxis + 0.6), '-r', label='line of slope 1')
+plt.loglog(np.exp(xaxis), np.exp(2 * xaxis - 0.2), '-b', label='line of slope 2')
+plt.loglog(np.exp(xaxis), np.exp(3 * xaxis + 1.9), '-g', label='line of slope 3')
+plt.xlabel('log(dt)', fontsize=14)
+plt.ylabel('log(error)', fontsize=14)
+plt.title('log(error) vs. log(dt)')
+plt.legend(loc='lower right')
+plt.show()
+
+'''yfe = solfe[0]
 yheun = solheun[0]
 yadams = soladams[0]
 xaxis = np.linspace(0, 5, len(yheun))
@@ -119,7 +131,7 @@ plt.plot(xaxis, yfe, '-g')
 plt.plot(xaxis, yheun, '-r')
 plt.plot(xaxis, yadams, '-y')
 plt.plot(xaxis, ytrue(xaxis), '-b')
-plt.show()
+plt.show()'''
 
 t0 = 0
 y0 = np.sqrt(3)
