@@ -123,7 +123,7 @@ plt.title('log(error) vs. log(dt)')
 plt.legend(loc='lower right')
 plt.show()
 
-'''yfe = solfe[0]
+yfe = solfe[0]
 yheun = solheun[0]
 yadams = soladams[0]
 xaxis = np.linspace(0, 5, len(yheun))
@@ -131,7 +131,7 @@ plt.plot(xaxis, yfe, '-g')
 plt.plot(xaxis, yheun, '-r')
 plt.plot(xaxis, yadams, '-y')
 plt.plot(xaxis, ytrue(xaxis), '-b')
-plt.show()'''
+plt.show()
 
 t0 = 0
 y0 = np.sqrt(3)
